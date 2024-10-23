@@ -1,9 +1,9 @@
-import './App.css'
+import HomePages from "./components/HomePage/homePage.jsx"
 function App() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <>
+      <HomePages/>
+    </>
   )
 }
 
