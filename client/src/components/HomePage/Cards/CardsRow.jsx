@@ -28,7 +28,7 @@ export default function AboutUsCards() {
 
   return (
     <div className="mt-20 md:mt-96 px-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-9 mx-10">
         {TheCardInfo.map((ele, index) => {
           const [ref, inView] = useInView({
             triggerOnce: true, 

@@ -6,6 +6,10 @@ body{
     background-color: #020113;
     color: white;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+}
 *{
     /* border: 1px solid red; */
 }
@@ -87,4 +91,43 @@ html {
     width: 150px;
     margin-right: auto;
     margin-left: auto;
+}
+.TheMidBTN{
+    padding: 5px 50px;
+    font-size: 18px;
+}
+.TheCardOfAboutUS{
+    background: #0e213056;
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(7.1px);
+    -webkit-backdrop-filter: blur(7.1px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.BigTXT{
+    line-height: 2.2cm;
+    letter-spacing: 1px;
+}
+.TheImageABU{
+    /* height: 95%; */
+    /* width: 9; */
+    /* width: 100%; */
+    align-items: center;
+    margin-right: auto;
+    margin-left: auto;
+}
+.gridTest{
+    grid-column: 1fr 0.5fr;
+}
+.TheBlockOfCard{
+    width: 300px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.TheLongCardEDIT{
+        background: #0e213056;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(7.1px);
+    -webkit-backdrop-filter: blur(7.1px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
