@@ -21,6 +21,11 @@ function TheRowCard() {
                 <br />
                 <p>There will be a device with vulnerabilities, and participants must gain complete control over it, relying on their speed in execution.</p>
             </div>
+            <div className="TheBlockOfCard p-3 rounded-md flex-1 TheLongCardEDIT">
+                <b className="block text-md"><span className="text-2xl inline-block relative top-1">05</span> / Photography competition</b>
+                <br />
+                <p>Each person or team must take photos, and the best photo will get its own score.</p>
+            </div>
         </div>
     );
 }
