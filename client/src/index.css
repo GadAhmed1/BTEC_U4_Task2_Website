@@ -140,3 +140,28 @@ html {
     -webkit-backdrop-filter: blur(7.1px);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
+.TheInputChagne{
+    outline: none;
+    border: none;
+}
+.TheFoucsInput{
+    transition: all .2s linear;
+    border: 2px solid;
+    border-color: rgba(255, 255, 255, 0.164);
+}
+.TheFoucsInput:focus{
+    border-color: white;
+}
+.TheGlassFormEFF{
+    background: #151515f8;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(7.1px);
+    -webkit-backdrop-filter: blur(7.1px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.TheBorderOfInptu > *{
+    /* border: 1px solid red   ; */
+}
+.TheTop{
+    top: 14px;
+}

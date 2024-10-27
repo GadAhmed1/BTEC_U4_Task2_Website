@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePages from "./components/HomePage/homePage.jsx";
 import AboutUsPage from "./components/AboutUsPage/AboutUsPage.jsx";
 import ContactUs from './components/Contact/Contact.jsx'
-import LoginForm from './components/LogSign_page/loginForm.jsx';
-import SignUpForm from './components/LogSign_page/SignUpForm.jsx';
+import LoginForm from './components/LogSign_page/Login/LoginBody.jsx';
+import SignUpForm from './components/LogSign_page/signUp/signUpBody.jsx';
 function App() {
   return (
     <Router>
