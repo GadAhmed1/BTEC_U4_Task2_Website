@@ -30,7 +30,7 @@ function TheInput(props) {
                             onChange={props.onChange}
                             type={isPasswordVisible ? 'text' : 'password'}
                             className="TheFoucsInput bg-transparent w-full p-2 rounded-md outline-none"
-                            placeholder="Enter your password"
+                            placeholder={props.placeholder}
                         />
                         <i
                             className={`fas ${isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'} text-gray-500 absolute right-2 TheTop cursor-pointer`}

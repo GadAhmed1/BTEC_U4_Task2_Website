@@ -6,8 +6,8 @@ function SignUpForm() {
     <div className='TheBGImage flex-grow'>
         <HeaderC />
         <TheForm/>
-        <div className='absolute bottom-0 w-full'>
-        <Footer />
+        <div className=''>
+        <Footer className="mt-96" />
         </div>
     </div>
   )

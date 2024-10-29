@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { NavLink } from 'react-router-dom';
 
 export default function HeroSection() {
   const fadeIn = {
@@ -26,15 +27,17 @@ export default function HeroSection() {
       >
         Success begins with a brave step, followed by persistence.
       </motion.p>
-      <motion.button 
-        className="loginbtn text-white border rounded-2xl px-3  transition duration-200 mt-10 bg-gray-800 hover:bg-gray-700 ThePaddingButton fixed-btn text-md TheMidBTN"
-        variants={fadeIn}
-        initial="initial"
-        animate="animate"
-        transition={{ delay: 0.4 }}
-      >
-        Join the Challenge
-      </motion.button>
+      <NavLink to="/competitions">
+        <motion.button 
+          className="loginbtn text-white border rounded-2xl px-3 transition duration-200 mt-10 bg-gray-800 hover:bg-gray-700 ThePaddingButton fixed-btn text-md TheMidBTN"
+          variants={fadeIn}
+          initial="initial"
+          animate="animate"
+          transition={{ delay: 0.4 }}
+        >
+          Join the Challenge
+        </motion.button>
+      </NavLink>
     </div>
   );
 }

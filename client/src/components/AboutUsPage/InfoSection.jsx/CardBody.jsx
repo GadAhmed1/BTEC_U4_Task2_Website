@@ -1,9 +1,28 @@
+import { useEffect, useState } from "react"; 
 import Card from "./card";
+import axios from "axios"; 
 
 function CardBody() {
+  const [individualSeats, setIndividualSeats] = useState(0); 
+  const [groupSeats, setGroupSeats] = useState(0);
+
+  useEffect(() => {
+    // دالة لجلب البيانات من الـ API
+    const fetchAvailability = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/competitions/availability");
+        setIndividualSeats(response.data.availableIndividualSeats); 
+        setGroupSeats(response.data.availableGroupSeats); 
+      } catch (error) {
+        console.error("Error fetching availability:", error);
+      }
+    };
+
+    fetchAvailability();
+  }, []); 
+
   return (
     <div className="block">
-
       <div className="pt-10 grid grid-rows-auto grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-10 m-5 md:m-10 select-none">
         <Card className="row-span-1">
           <b className="block text-[#1793d1e5]">Get started with us now</b>
@@ -18,13 +37,13 @@ function CardBody() {
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-10">
           <Card className="TheCardSMEdit">
             <div>
-              <b className="text-3xl md:text-4xl block pl-2">20</b>
+              <b className="text-3xl md:text-4xl block pl-2">{individualSeats}</b>
               <p className="pl-2">Number of people remaining to apply for individual competitions</p>
             </div>
           </Card>
           <Card className="TheCardSMEdit">
             <div>
-              <b className="text-3xl md:text-4xl block pl-2">4</b>
+              <b className="text-3xl md:text-4xl block pl-2">{groupSeats}</b>
               <p className="pl-2">Number of groups that lack people</p>
             </div>
           </Card>
