@@ -9,34 +9,36 @@ function SignInForm() {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-      try {
-          const response = await fetch('http://localhost:3000/users/login', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  username: theEmailValue.trim(),
-                  password: thePassValue,
-              }),
-          });
-  
-          const data = await response.json();
-  
-          if (!response.ok) {
-              throw new Error(data.message || 'Login failed');
-          }
-  
-          alert(`Login successful! Welcome, ${data.user.username}`);
-          navigate('/dashboard');
-  
-      } catch (error) {
-          console.error('Error:', error);
-          setTheVisibleError(true);
-      }
-  };
-  
-  
+        try {
+            const response = await fetch('http://localhost:3000/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: theEmailValue.trim(),
+                    password: thePassValue,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                if (data.message === 'User not found') {
+                    alert("USER IS NOT SIGN UP");
+                } else {
+                    throw new Error(data.message || 'Login failed');
+                }
+            } else {
+                localStorage.setItem('userID', data.user.username); // Assuming username is the userID
+                alert(`Login successful! Welcome, ${data.user.username}`);
+                navigate('/dashboard');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setTheVisibleError(true);
+        }
+    };
 
     return (
         <div className='select-none TheGlassFormEFF bg-[#151515] w-full md:w-8/12 lg:w-6/12 xl:w-5/12 rounded-2xl mx-auto my-20 p-7 md:p-7'>

@@ -48,10 +48,18 @@ function SignUpTheFormBody() {
         const apiUrl = isTeamCompetition 
             ? 'http://localhost:3000/users/add-group' 
             : 'http://localhost:3000/users/add'; 
-        
+
         const response = await axios.post(apiUrl, TheSignUpObj);
         console.log(response.data);
-        alert("User registered successfully LOGIN NOW !");
+
+        const userId = response.data.user._id; 
+        localStorage.setItem("userId", userId);
+        
+        // Save studentID and email to local storage
+        localStorage.setItem("studentID", studentID);
+        localStorage.setItem("score", 0);
+
+        alert("User registered successfully! LOGIN NOW!");
     } catch (error) {
         console.error('Error during sign up:', error);
         const errorMessage = error.response 
@@ -60,9 +68,6 @@ function SignUpTheFormBody() {
         alert(`Error during sign up: ${errorMessage}`); 
     }
 };
-
-
-
 
 
   const handleCompetitionType = (isTeam) => {
@@ -225,10 +230,8 @@ function SignUpTheFormBody() {
                   key={team}
                   type="button"
                   onClick={() => handleTeamSelection(team)}
-                  className={`justify-center inline-flex items-center px-3 py-2 text-md font-medium text-white bg-[#1b1b1b] border border-gray-700 hover:bg-[#1b1b1bab] focus:z-10 focus:ring-2 focus:ring-gray-500 ${teamSelection === team ? "bg-[#81a3ad]" : ""
-                    }`}
+                  className={`justify-center inline-flex items-center px-3 py-2 text-md font-medium text-white bg-[#1b1b1b] border border-gray-700 hover:bg-[#1b1b1bab] focus:z-10 focus:ring-2 focus:ring-gray-500 ${teamSelection === team ? "ring-2 ring-[#aaa]" : ""}`}
                 >
-                  <i className="fas fa-users mr-2"></i>
                   {team}
                 </button>
               ))}
@@ -237,25 +240,23 @@ function SignUpTheFormBody() {
         )}
 
         {isSelectionErrorVisible && (
-          <p className='text-red-500 mb-4'>Please select at least one competition.</p>
+          <div className="text-red-600">
+            <p>Please select at least one competition!</p>
+          </div>
         )}
 
+        <div className="flex justify-center">
         <button
           onClick={handleSignUp}
           className="w-full p-2 md:p-3 text-lg md:text-xl rounded-xl bg-[#81a3ad] hover:bg-[#81a3adb9] transition-all active:bg-[#81a3ad70]"
         >
           Sign Up
         </button>
-
-        <div className="flex items-center mt-7 mb-5">
-          <div className="flex-grow border-t border-gray-300"></div>
-          <span className="mx-2 text-gray-500">OR</span>
-          <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        <p className="text-center text-sm md:text-md">
-          Already have an account?
-          <Link to="/login" className="underline text-[#81a3ad] ml-1">Log In</Link>
+        <p className='mt-4 text-center'>
+          Already have an account? 
+          <Link to="/login" className="text-blue-500"> Sign In</Link>
         </p>
       </div>
     </div>

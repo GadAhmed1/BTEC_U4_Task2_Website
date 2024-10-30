@@ -3,14 +3,14 @@ const ConnectDB = require('./config/db');
 const Individual = require('./Models/IndividualContestants');
 const Groups = require('./Models/ContestantsGroups');
 const Student = require('./Models/Student');
-const bcrypt = require('bcrypt');
 const session = require('express-session');
-const CORS = require('cors');
+const cors = require('cors');
+const axios = require('axios');
 
 const app = express();
 
 app.use(express.json());
-app.use(CORS());
+app.use(cors());
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
@@ -20,17 +20,29 @@ app.use(session({
 
 ConnectDB();
 
-const hashPassword = async (password) => {
-    const saltRounds = 10;
-    return await bcrypt.hash(password, saltRounds);
+const fetchCompetitionsData = async () => {
+    try {
+        const response = await axios.get('https://external-api.com/competitions');
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching competitions data:', error.message);
+        throw new Error('Error fetching competitions data');
+    }
 };
+
+app.get('/competitions', async (req, res) => {
+    try {
+        const competitionsData = await fetchCompetitionsData();
+        res.status(200).json(competitionsData);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching competitions data', error: error.message });
+    }
+});
 
 app.post('/users/add', async (req, res) => {
     const { studentID, username, email, password, competitionType, selectedCompetitions, teamSelection } = req.body;
-
     try {
         const studentExists = await Student.findOne({ studentID });
-
         if (!studentExists) {
             return res.status(404).json({ message: 'Student ID not found' });
         }
@@ -42,13 +54,11 @@ app.post('/users/add', async (req, res) => {
             return res.status(400).json({ message: 'No available seats for Individual Competitions.' });
         }
 
-        const hashedPassword = await hashPassword(password);
-
         const newUser = new Individual({
             studentID,
             username,
             email,
-            password: hashedPassword,
+            password,
             competitionType,
             selectedCompetitions,
             teamSelection
@@ -57,7 +67,6 @@ app.post('/users/add', async (req, res) => {
         await newUser.save();
         res.status(201).json({ message: 'User added successfully', user: newUser });
     } catch (error) {
-        console.error('Error adding user:', error);
         res.status(500).json({ message: 'Error adding user', error: error.message });
     }
 });
@@ -67,7 +76,6 @@ app.post('/users/add-group', async (req, res) => {
 
     try {
         const studentExists = await Student.findOne({ studentID });
-
         if (!studentExists) {
             return res.status(404).json({ message: 'Student ID not found' });
         }
@@ -79,13 +87,11 @@ app.post('/users/add-group', async (req, res) => {
             return res.status(400).json({ message: 'No available seats for Group Competitions.' });
         }
 
-        const hashedPassword = await hashPassword(password);
-
         const newGroupUser = new Groups({
             studentID,
             username,
             email,
-            password: hashedPassword,
+            password,
             competitionType,
             selectedCompetitions,
             teamSelection
@@ -94,30 +100,16 @@ app.post('/users/add-group', async (req, res) => {
         await newGroupUser.save();
         res.status(201).json({ message: 'User added to group successfully', user: newGroupUser });
     } catch (error) {
-        console.error('Error adding group user:', error);
         res.status(500).json({ message: 'Error adding group user', error: error.message });
     }
 });
 
 app.post('/users/login', async (req, res) => {
-    const { username, password } = req.body;
-
+    const { studentID } = req.body;
     try {
-        console.log(`Attempting to log in user: ${username}`); // قم بتسجيل اسم المستخدم
-
-        const user = await Individual.findOne({ username }) || await Groups.findOne({ username });
-
-        console.log('User found:', user); // تحقق مما إذا كان المستخدم موجودًا
-
+        const user = await Individual.findOne({ studentID }) || await Groups.findOne({ studentID });
         if (!user) {
-            console.log('User not found');
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            console.log('Invalid password');
-            return res.status(401).json({ message: 'Invalid password' });
+            return res.status(404).json({ message: 'User is not signed up' });
         }
 
         req.session.user = {
@@ -126,15 +118,30 @@ app.post('/users/login', async (req, res) => {
             teamType: user.teamType || null
         };
 
-        console.log('Login successful:', req.session.user);
-        res.status(200).json({ message: 'Login successful', user: req.session.user });
+        res.status(200).json({ message: 'Login successful', user: req.session.user, userID: user.studentID });
     } catch (error) {
-        console.error('Error logging in:', error);
         res.status(500).json({ message: 'Error logging in', error: error.message });
     }
 });
 
+app.post('/users/save-score', async (req, res) => {
+    const { studentID, score } = req.body;
 
+    try {
+        const user = await Individual.findOne({ studentID }) || await Groups.findOne({ studentID });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        user.score = (user.score || 0) + score; 
+        await user.save();
+
+        console.log(`User: ${user.username}, New Score: ${user.score}`);
+        res.status(200).json({ message: 'Score saved successfully', score: user.score });
+    } catch (error) {
+        console.error('Error saving score:', error); 
+        res.status(500).json({ message: 'Error saving score', error: error.message });
+    }
+});
 
 app.get('/competitions/availability', async (req, res) => {
     try {
@@ -152,8 +159,29 @@ app.get('/competitions/availability', async (req, res) => {
             availableGroupSeats: availableGroupSeats >= 0 ? availableGroupSeats : 0
         });
     } catch (error) {
-        console.error('Error fetching availability:', error);
         res.status(500).json({ message: 'Error fetching availability', error: error.message });
+    }
+});
+
+app.get('/users/individual', async (req, res) => {
+    try {
+        const individuals = await Individual.find({})
+            .select('username score')
+            .limit(20) 
+            .lean(); 
+        res.status(200).json(individuals);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching individual contestants', error: error.message });
+    }
+});
+
+
+app.get('/users/groups', async (req, res) => {
+    try {
+        const groups = await Groups.find({});
+        res.status(200).json(groups);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching group contestants', error: error.message });
     }
 });
 
@@ -161,6 +189,16 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+app.delete('/users/remove-all', async (req, res) => {
+    try {
+        await Individual.deleteMany({});
+        await Groups.deleteMany({});
+        res.status(200).json({ message: 'All users removed successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error removing users', error: error.message });
+    }
+});
+
 app.listen(3000, () => {
-    console.log(`START LISTEN ON PORT 3000`);
+    console.log(`Server is running on port 3000`);
 });
