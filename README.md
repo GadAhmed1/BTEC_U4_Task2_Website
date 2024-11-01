@@ -21,4 +21,4 @@
 ### 1. Clone the repository:
 
 ```bash
-git clone https://github.com/GadAhmed1/BTEC_U4_Task2_Website.git  <!-- Replace with your actual repository link -->
+git clone https://github.com/GadAhmed1/BTEC_U4_Task2_Website.git  
