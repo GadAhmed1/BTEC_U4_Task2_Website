@@ -166,7 +166,7 @@ app.get('/competitions/availability', async (req, res) => {
 app.get('/users/individual', async (req, res) => {
     try {
         const individuals = await Individual.find({})
-            .select('username score')
+            .select('username score studentID')
             .limit(20) 
             .lean(); 
         res.status(200).json(individuals);
